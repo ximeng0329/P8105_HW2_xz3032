@@ -1,6 +1,6 @@
 ---
 title: "p8105_hw2_xz3032"
-output: html_document
+output: github_document
 ---
 
 ```{r}
