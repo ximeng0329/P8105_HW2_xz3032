@@ -15,7 +15,7 @@ Read the Mr. Trashwheel dataset
 ```{r}
 trashwheel_df = 
   read_xlsx(
-    "~/Desktop/DataScience/Trash-Wheel-Collection-Totals-8-6-19.xlsx",
+    "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx",
     sheet = 1,
     range = "A2:N408" ) %>%
     janitor::clean_names() %>%
@@ -29,7 +29,7 @@ trashwheel_df =
 Read precipitation data for 2018 and 2017
 
 ```{r}
-p2018 = read_excel("~/Desktop/DataScience/Trash-Wheel-Collection-Totals-8-6-19.xlsx",
+p2018 = read_excel("./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx",
                    sheet = "2018 Precipitation",
                    skip = 1) %>%
   janitor::clean_names() %>%
@@ -37,7 +37,7 @@ p2018 = read_excel("~/Desktop/DataScience/Trash-Wheel-Collection-Totals-8-6-19.x
   mutate(year = 2018) %>%
   relocate(year)
 
-p2017 = read_excel("~/Desktop/DataScience/Trash-Wheel-Collection-Totals-8-6-19.xlsx",
+p2017 = read_excel("./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx",
                    sheet = "2017 Precipitation",
                    skip = 1) %>%
   janitor::clean_names() %>%
@@ -70,7 +70,7 @@ Read NYC transit data
 
 ```{r}
 transit_df = 
-  read_csv("~/Desktop/DataScience/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>%
+  read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>%
   janitor::clean_names() %>%
   select(line, station_name, station_latitude, station_longitude, entry, vending, entrance_type, ada, starts_with("route")) %>%
   mutate(entry = recode(entry, `YES` = TRUE , `NO` = FALSE)) %>%
@@ -98,11 +98,11 @@ select(transit_df,line,station_name,ada) %>%
   distinct(line, station_name) %>%
   count()
 ```
-How many stations are ADA compliance?
+How many stations are ADA compliance? (84)
 ```{r}
 select(transit_df,line,station_name,ada) %>%
-  distinct(line, station_name) %>%
   filter(ada == TRUE) %>%
+  distinct(line, station_name) %>%
   count()
 ```
 What proportion of station entrances / exits without vending allow entrance? (759 out of 2013)
@@ -117,13 +117,12 @@ count_2 = select(transit_df, entry, vending) %>%
 count_1/count_2
 ```
 
-
 ## Problem 3
 
 Clean pols-monnth data
 
 ```{r}
-pols_month = read_csv("~/Desktop/DataScience/fivethirtyeight_datasets/pols-month.csv") %>%
+pols_month = read_csv("./data/fivethirtyeight_datasets/pols-month.csv") %>%
   janitor::clean_names() %>%
   separate(mon, into = c("year", "month", "day")) %>%
   mutate(year = as.integer(year),
@@ -135,7 +134,7 @@ pols_month = read_csv("~/Desktop/DataScience/fivethirtyeight_datasets/pols-month
 Clean snp data
 
 ```{r}
-snp_df = read_csv("~/Desktop/DataScience/fivethirtyeight_datasets/snp.csv") %>%
+snp_df = read_csv("./data/fivethirtyeight_datasets/snp.csv") %>%
   janitor::clean_names() %>%
   separate(date, into = c("month", "day", "year")) %>%
     mutate(year = as.integer(year),
@@ -148,7 +147,7 @@ snp_df = read_csv("~/Desktop/DataScience/fivethirtyeight_datasets/snp.csv") %>%
 Clean unemployment data
 
 ```{r}
-unemploy_df = read_csv("~/Desktop/DataScience/fivethirtyeight_datasets/unemployment.csv") %>%
+unemploy_df = read_csv("./data/fivethirtyeight_datasets/unemployment.csv") %>%
   janitor::clean_names() %>%
   pivot_longer(
     jan:dec,

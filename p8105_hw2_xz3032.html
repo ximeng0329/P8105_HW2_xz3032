@@ -381,7 +381,7 @@ summary {
 <p>Read the Mr. Trashwheel dataset</p>
 <pre class="r"><code>trashwheel_df = 
   read_xlsx(
-    &quot;~/Desktop/DataScience/Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
+    &quot;./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
     sheet = 1,
     range = &quot;A2:N408&quot; ) %&gt;%
     janitor::clean_names() %&gt;%
@@ -391,7 +391,7 @@ summary {
       sports_balls = as.integer(sports_balls)
     )</code></pre>
 <p>Read precipitation data for 2018 and 2017</p>
-<pre class="r"><code>p2018 = read_excel(&quot;~/Desktop/DataScience/Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
+<pre class="r"><code>p2018 = read_excel(&quot;./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
                    sheet = &quot;2018 Precipitation&quot;,
                    skip = 1) %&gt;%
   janitor::clean_names() %&gt;%
@@ -399,7 +399,7 @@ summary {
   mutate(year = 2018) %&gt;%
   relocate(year)
 
-p2017 = read_excel(&quot;~/Desktop/DataScience/Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
+p2017 = read_excel(&quot;./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;,
                    sheet = &quot;2017 Precipitation&quot;,
                    skip = 1) %&gt;%
   janitor::clean_names() %&gt;%
@@ -423,7 +423,7 @@ precip_df = left_join(precip_df, month_df, by = &quot;month&quot;)</code></pre>
 <p>#Problem 2</p>
 <p>Read NYC transit data</p>
 <pre class="r"><code>transit_df = 
-  read_csv(&quot;~/Desktop/DataScience/NYC_Transit_Subway_Entrance_And_Exit_Data.csv&quot;) %&gt;%
+  read_csv(&quot;./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv&quot;) %&gt;%
   janitor::clean_names() %&gt;%
   select(line, station_name, station_latitude, station_longitude, entry, vending, entrance_type, ada, starts_with(&quot;route&quot;)) %&gt;%
   mutate(entry = recode(entry, `YES` = TRUE , `NO` = FALSE)) %&gt;%
@@ -459,18 +459,38 @@ precip_df = left_join(precip_df, month_df, by = &quot;month&quot;)</code></pre>
 </div>
 <div id="answer-questions" class="section level1">
 <h1>Answer Questions</h1>
-<p>How many distinct stations are there?</p>
-<p>How many stations are ADA compliance?</p>
-<pre class="r"><code>transit_df %&gt;% filter(ada == TRUE) %&gt;%  count()</code></pre>
+<p>How many distinct stations are there? (465)</p>
+<pre class="r"><code>select(transit_df,line,station_name,ada) %&gt;%
+  distinct(line, station_name) %&gt;%
+  count()</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##       n
 ##   &lt;int&gt;
-## 1  5148</code></pre>
-<p>What proportion of station entrances / exits without vending allow entrance?</p>
+## 1   465</code></pre>
+<p>How many stations are ADA compliance? (84)</p>
+<pre class="r"><code>select(transit_df,line,station_name,ada) %&gt;%
+  filter(ada == TRUE) %&gt;%
+  distinct(line, station_name) %&gt;%
+  count()</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##       n
+##   &lt;int&gt;
+## 1    84</code></pre>
+<p>What proportion of station entrances / exits without vending allow entrance? (759 out of 2013)</p>
+<pre class="r"><code>count_1 = select(transit_df, entry, vending) %&gt;%
+                filter(entry == TRUE) %&gt;%
+                filter(vending == &quot;NO&quot;) %&gt;%
+                count()
+count_2 = select(transit_df, entry, vending) %&gt;%
+                filter(vending == &quot;NO&quot;) %&gt;%
+                count()
+count_1/count_2</code></pre>
+<pre><code>##           n
+## 1 0.3770492</code></pre>
 <div id="problem-3" class="section level2">
 <h2>Problem 3</h2>
 <p>Clean pols-monnth data</p>
-<pre class="r"><code>pols_month = read_csv(&quot;~/Desktop/DataScience/fivethirtyeight_datasets/pols-month.csv&quot;) %&gt;%
+<pre class="r"><code>pols_month = read_csv(&quot;./data/fivethirtyeight_datasets/pols-month.csv&quot;) %&gt;%
   janitor::clean_names() %&gt;%
   separate(mon, into = c(&quot;year&quot;, &quot;month&quot;, &quot;day&quot;)) %&gt;%
   mutate(year = as.integer(year),
@@ -490,7 +510,7 @@ precip_df = left_join(precip_df, month_df, by = &quot;month&quot;)</code></pre>
 ##   rep_dem = col_double()
 ## )</code></pre>
 <p>Clean snp data</p>
-<pre class="r"><code>snp_df = read_csv(&quot;~/Desktop/DataScience/fivethirtyeight_datasets/snp.csv&quot;) %&gt;%
+<pre class="r"><code>snp_df = read_csv(&quot;./data/fivethirtyeight_datasets/snp.csv&quot;) %&gt;%
   janitor::clean_names() %&gt;%
   separate(date, into = c(&quot;month&quot;, &quot;day&quot;, &quot;year&quot;)) %&gt;%
     mutate(year = as.integer(year),
@@ -504,7 +524,7 @@ precip_df = left_join(precip_df, month_df, by = &quot;month&quot;)</code></pre>
 ##   close = col_double()
 ## )</code></pre>
 <p>Clean unemployment data</p>
-<pre class="r"><code>unemploy_df = read_csv(&quot;~/Desktop/DataScience/fivethirtyeight_datasets/unemployment.csv&quot;) %&gt;%
+<pre class="r"><code>unemploy_df = read_csv(&quot;./data/fivethirtyeight_datasets/unemployment.csv&quot;) %&gt;%
   janitor::clean_names() %&gt;%
   pivot_longer(
     jan:dec,
